@@ -1,0 +1,16 @@
+D:\c_sharp\eluosifangkuai\eluosifangkuai\bin\Debug\net6.0-windows\eluosifangkuai.exe
+D:\c_sharp\eluosifangkuai\eluosifangkuai\bin\Debug\net6.0-windows\eluosifangkuai.deps.json
+D:\c_sharp\eluosifangkuai\eluosifangkuai\bin\Debug\net6.0-windows\eluosifangkuai.runtimeconfig.json
+D:\c_sharp\eluosifangkuai\eluosifangkuai\bin\Debug\net6.0-windows\eluosifangkuai.dll
+D:\c_sharp\eluosifangkuai\eluosifangkuai\bin\Debug\net6.0-windows\eluosifangkuai.pdb
+D:\c_sharp\eluosifangkuai\eluosifangkuai\obj\Debug\net6.0-windows\eluosifangkuai.Form1.resources
+D:\c_sharp\eluosifangkuai\eluosifangkuai\obj\Debug\net6.0-windows\eluosifangkuai.csproj.GenerateResource.cache
+D:\c_sharp\eluosifangkuai\eluosifangkuai\obj\Debug\net6.0-windows\eluosifangkuai.GeneratedMSBuildEditorConfig.editorconfig
+D:\c_sharp\eluosifangkuai\eluosifangkuai\obj\Debug\net6.0-windows\eluosifangkuai.AssemblyInfoInputs.cache
+D:\c_sharp\eluosifangkuai\eluosifangkuai\obj\Debug\net6.0-windows\eluosifangkuai.AssemblyInfo.cs
+D:\c_sharp\eluosifangkuai\eluosifangkuai\obj\Debug\net6.0-windows\eluosifangkuai.csproj.CoreCompileInputs.cache
+D:\c_sharp\eluosifangkuai\eluosifangkuai\obj\Debug\net6.0-windows\eluosifangkuai.dll
+D:\c_sharp\eluosifangkuai\eluosifangkuai\obj\Debug\net6.0-windows\refint\eluosifangkuai.dll
+D:\c_sharp\eluosifangkuai\eluosifangkuai\obj\Debug\net6.0-windows\eluosifangkuai.pdb
+D:\c_sharp\eluosifangkuai\eluosifangkuai\obj\Debug\net6.0-windows\eluosifangkuai.genruntimeconfig.cache
+D:\c_sharp\eluosifangkuai\eluosifangkuai\obj\Debug\net6.0-windows\ref\eluosifangkuai.dll
