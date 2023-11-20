@@ -76,28 +76,28 @@ namespace eluosifangkuai
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
             if(e.KeyCode == Keys.Down){ 
-                if (block1 != null)
+                if (block1 != null && block1.CanMove(EventType.Down, inderArrays))
                 {
                     block1.Down(inderArrays);
                     DrawGraphies();
                 }
             }else if(e.KeyCode == Keys.Left) {
-                if (block1 != null)
+                if (block1 != null && block1.CanMove(EventType.Left, inderArrays))
                 {
                     block1.Left(inderArrays);
                     DrawGraphies();
                 }
             }
             else if(e.KeyCode == Keys.Right) {
-                if (block1 != null)
+                if (block1 != null && block1.CanMove(EventType.Right, inderArrays))
                 {
                     block1.Right(inderArrays);
                     DrawGraphies();
                 }
             }
-            else if (e.KeyCode == Keys.Up)
+            else if (e.KeyCode == Keys.Up )
             {
-                if (block1 != null)
+                if (block1 != null )
                 {
                     block1.Rotate(inderArrays);
                     DrawGraphies();
@@ -122,19 +122,53 @@ namespace eluosifangkuai
             {
                 block1 = new Block1(3, 4);
                 block1.Draw(inderArrays);
-                DrawGraphies();
             }
             else
             {
                 if (block1.CanMove(EventType.Down, inderArrays))
                 {
                     block1.Down(inderArrays);
+                    DrawGraphies();
+                }
+                else
+                {
+                    CalculateScore();
+
+                    block1 = new Block1(3, 4);
+                    block1.Draw(inderArrays);
                 }
             }
             // ¿ØÖÆblockµÄÏÂÂä
             //if
             //block1.Down(inderArrays);
 
+        }
+
+        private void CalculateScore()
+        {
+
+           for (int i = 0; i < row; i++)
+            {
+                bool flag = true;
+                for(int j = 0; j < col; j++)
+                {
+                    if (inderArrays[i, j] == 0)
+                    {
+                        flag = false;
+                    }
+
+                }
+                if (flag)
+                {
+                    for (int j = 0; j < col; j++)
+                    {
+                        inderArrays[i, j] = inderArrays[i - 1, j];
+                        inderArrays[i - 1, j] = 0;
+
+                    }
+                }
+
+            }
         }
     }
 

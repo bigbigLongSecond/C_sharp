@@ -29,7 +29,8 @@ namespace eluosifangkuai.block
             Modfile(oldSquares, array, 0);
             List<Square> newSquares = getAllPoint(x, y, sharpType);
             Modfile(newSquares, array, 1);
-
+            X = x;
+            Y = y;
         }
 
         private void Modfile(List<Square> squares, int[,] array, int v)
@@ -145,7 +146,7 @@ namespace eluosifangkuai.block
 
             // 获取到坐标
             List<Square> newPoints = getAllPoint(x, y, type);
-            List<Square> oldPoint = getAllPoint(X, Y, type);
+            List<Square> oldPoint = getAllPoint(X, Y, sharpType);
 
             foreach (var item in newPoints)
             {

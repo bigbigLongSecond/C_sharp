@@ -39,7 +39,7 @@ namespace eluosifangkuai.block
         Down,
         Left,
         Right,
-        rotate
+        Rotate
     }
    public enum SharpType
     {
