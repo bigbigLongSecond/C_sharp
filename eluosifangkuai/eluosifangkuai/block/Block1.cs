@@ -12,88 +12,200 @@ namespace eluosifangkuai.block
         {
             X = x;
             Y = y;
+            sharpType = SharpType.Up;
+
         }
         public override void Down(int[,] array)
         {
+            if (CanMove(EventType.Down, array))
+            {
+                Modfile(X + 1, Y, array);
+            }
+        }
 
-
-            Modfile(X, Y, array, 0);
-            X = X + 1;
-            Modfile( X, Y, array, 1);
-
-
+        private void Modfile(int x, int y, int[,] array)
+        {
+            List<Square> oldSquares = getAllPoint(X, Y, sharpType);
+            Modfile(oldSquares, array, 0);
+            List<Square> newSquares = getAllPoint(x, y, sharpType);
+            Modfile(newSquares, array, 1);
 
         }
 
-        private void Modfile( int x, int y, int[,] array, int v)
+        private void Modfile(List<Square> squares, int[,] array, int v)
         {
-            switch (sharpType)
+            if (squares != null && squares.Count > 0)
             {
-                case SharpType.Up:
-                    array[x, y] = v;
-                    array[x, y - 1] = v;
-                    array[x, y + 1] = v;
-                    array[x - 1, y] = v;
-                    break;
-                case SharpType.Right:
-                    array[x, y] = v;
-                    array[x-1, y ] = v;
-                    array[x+1, y ] = v;
-                    array[x, y+1] = v;
-                    break;
-                case SharpType.Down:
-                    array[x, y] = v;
-                    array[x, y - 1] = v;
-                    array[x, y + 1] = v;
-                    array[x + 1, y] = v;
-                    break;
-                case SharpType.Left:
-                    array[x, y] = v;
-                    array[x - 1, y] = v;
-                    array[x + 1, y] = v;
-                    array[x, y - 1] = v;
-                    break;
+                foreach (Square square in squares)
+                {
+                    array[square.XPoint, square.YPoint] = v;
+                }
             }
 
         }
 
-        public override void Draw(Graphics graphics)
+
+        public override void Draw(int[,] array)
         {
-            throw new NotImplementedException();
+            List<Square> newSquares = getAllPoint(X, Y, sharpType);
+            Modfile(newSquares, array, 1);
         }
 
         public override void Left(int[,] array)
         {
-
-            Modfile(X, Y, array, 0);
-            Y = Y - 1;
-            Modfile(X, Y, array, 1);
+            if (CanMove(EventType.Left, array))
+            {
+                Modfile(X, Y - 1, array);
+            }
         }
 
         public override void Right(int[,] array)
         {
-
-            Modfile(X, Y, array, 0);
-            Y = Y + 1;
-            Modfile(X, Y, array, 1);
+            if (CanMove(EventType.Right, array))
+            {
+                Modfile(X, Y + 1, array);
+            }
         }
 
         public override void Rotate(int[,] array)
         {
-
-
-            Modfile(X, Y, array, 0);
             int index = (int)sharpType;
-            if (index + 1 ==4)
+            if (index + 1 == 4)
             {
                 index = 0;
-            }else
+            }
+            else
             {
                 index++;
             }
-            sharpType = (SharpType)index;
-            Modfile(X, Y, array, 1);
+            SharpType type = (SharpType)index;
 
+            if (CanMove(X, Y, array, type))
+            {
+
+                List<Square> squares = getAllPoint(X, Y, sharpType);
+
+                Modfile(squares, array, 0);
+                sharpType = type;
+                List<Square> newSquares = getAllPoint(X, Y, type);
+                Modfile(newSquares, array, 0);
+            }
+
+
+
+        }
+
+
+        public override bool CanMove(EventType eventType, int[,] array)
+        {
+            bool flag = false;
+            switch (eventType)
+            {
+                case EventType.Down:
+                    flag = CanMove(X + 1, Y, array, sharpType);
+                    break;
+                case EventType.Right:
+                    flag = CanMove(X, Y + 1, array, sharpType);
+                    break;
+                case EventType.Left:
+                    flag = CanMove(X, Y - 1, array, sharpType);
+                    break;
+            }
+
+            return flag;
+        }
+
+
+
+        private bool CanMove(int x, int y, int[,] array, SharpType type)
+        {
+            bool flag = true;
+
+            List<Square> squares = findNewPoint(x, y, type);
+            foreach (var square in squares)
+            {
+                if ((square.XPoint >= 0 && square.XPoint < 20) && (square.YPoint >= 0 && square.YPoint < 10)
+                  && array[square.XPoint, square.YPoint] == 0
+                  )
+                {
+                    flag = true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            return flag;
+        }
+
+        private List<Square> findNewPoint(int x, int y, SharpType type)
+        {
+            List<Square> squareList = new List<Square>();
+
+            // 获取到坐标
+            List<Square> newPoints = getAllPoint(x, y, type);
+            List<Square> oldPoint = getAllPoint(X, Y, type);
+
+            foreach (var item in newPoints)
+            {
+                bool flag = true;
+                foreach (var item1 in oldPoint)
+                {
+                    if (item.equals(item1))
+                    {
+                        flag = false;
+
+                    }
+
+                }
+                if (flag)
+                {
+                    squareList.Add(item);
+                }
+
+            }
+            return squareList;
+        }
+
+        private List<Square> getAllPoint(int x, int y, SharpType type)
+        {
+            List<Square> squareList = new List<Square>();
+
+            switch (type)
+            {
+                case SharpType.Up:
+                    squareList.Add(new Square().setValue(x, y));
+                    squareList.Add(new Square().setValue(x, y - 1));
+                    squareList.Add(new Square().setValue(x, y + 1));
+                    squareList.Add(new Square().setValue(x - 1, y));
+                    break;
+                case SharpType.Right:
+
+                    squareList.Add(new Square().setValue(x, y));
+                    squareList.Add(new Square().setValue(x - 1, y));
+                    squareList.Add(new Square().setValue(x + 1, y));
+                    squareList.Add(new Square().setValue(x, y + 1));
+
+                    break;
+                case SharpType.Down:
+
+                    squareList.Add(new Square().setValue(x, y));
+                    squareList.Add(new Square().setValue(x, y - 1));
+                    squareList.Add(new Square().setValue(x, y + 1));
+                    squareList.Add(new Square().setValue(x + 1, y));
+
+                    break;
+                case SharpType.Left:
+
+                    squareList.Add(new Square().setValue(x, y));
+                    squareList.Add(new Square().setValue(x - 1, y));
+                    squareList.Add(new Square().setValue(x + 1, y));
+                    squareList.Add(new Square().setValue(x, y - 1));
+
+                    break;
+            }
+            return squareList;
         }
     }
 
