@@ -12,14 +12,59 @@ namespace eluosifangkuai
         int width = 20;
         int[,] inderArrays;
 
-       System.Windows.Forms.Timer timer;
+        System.Windows.Forms.Timer timer;
 
-        private Block1 block1;
+        private IBlock Iblock;
         private Graphics g;
+        private int Score;
+        /**
+         * 0: 未开始
+         * 1：开始
+         * 2：暂停
+         */
+        private int GameStatus = 0;
         public Form1()
         {
             InitializeComponent();
             inderArrays = new int[row, col];
+            initIndexArray();
+            timer = new System.Windows.Forms.Timer();
+            timer.Interval = 500;
+            timer.Enabled = true;
+            timer.Tick += Update_timer;
+            // 注册 PreviewKeyDown 事件处理程序
+            this.PreviewKeyDown += MainForm_PreviewKeyDown;
+
+            // 禁用默认的焦点导航
+            //this.KeyPreview = true;
+            //this.KeyDown += MainForm_KeyDown;
+        }
+
+        private void MainForm_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            // 按下上下左右箭头键时，阻止焦点导航
+            if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down ||
+                e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
+            {
+                e.IsInputKey = true;
+            }
+        }
+
+        private void MainForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            // 按下上下左右箭头键时，禁用焦点导航
+            if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down ||
+                e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
+            {
+                e.Handled = true;
+
+                // 将焦点设置到当前活动控件
+                ActiveControl = (Control)sender;
+            }
+        }
+
+        private void initIndexArray()
+        {
             for (int i = 0; i < row; i++)
             {
                 for (global::System.Int32 j = 0; j < col; j++)
@@ -27,10 +72,6 @@ namespace eluosifangkuai
                     inderArrays[i, j] = 0;
                 }
             }
-            timer = new System.Windows.Forms.Timer();
-            timer.Interval = 500;
-            timer.Enabled = true;
-            timer.Tick += Update_timer;
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -75,32 +116,40 @@ namespace eluosifangkuai
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Down){ 
-                if (block1 != null && block1.CanMove(EventType.Down, inderArrays))
-                {
-                    block1.Down(inderArrays);
-                    DrawGraphies();
-                }
-            }else if(e.KeyCode == Keys.Left) {
-                if (block1 != null && block1.CanMove(EventType.Left, inderArrays))
-                {
-                    block1.Left(inderArrays);
-                    DrawGraphies();
-                }
-            }
-            else if(e.KeyCode == Keys.Right) {
-                if (block1 != null && block1.CanMove(EventType.Right, inderArrays))
-                {
-                    block1.Right(inderArrays);
-                    DrawGraphies();
-                }
-            }
-            else if (e.KeyCode == Keys.Up )
+
+            if (GameStatus == 1)
             {
-                if (block1 != null )
+                if (e.KeyCode == Keys.Down)
                 {
-                    block1.Rotate(inderArrays);
-                    DrawGraphies();
+                    if (Iblock != null && Iblock.CanMove(EventType.Down, inderArrays))
+                    {
+                        Iblock.Down(inderArrays);
+                        DrawGraphies();
+                    }
+                }
+                else if (e.KeyCode == Keys.Left)
+                {
+                    if (Iblock != null && Iblock.CanMove(EventType.Left, inderArrays))
+                    {
+                        Iblock.Left(inderArrays);
+                        DrawGraphies();
+                    }
+                }
+                else if (e.KeyCode == Keys.Right)
+                {
+                    if (Iblock != null && Iblock.CanMove(EventType.Right, inderArrays))
+                    {
+                        Iblock.Right(inderArrays);
+                        DrawGraphies();
+                    }
+                }
+                else if (e.KeyCode == Keys.Up)
+                {
+                    if (Iblock != null)
+                    {
+                        Iblock.Rotate(inderArrays);
+                        DrawGraphies();
+                    }
                 }
             }
         }
@@ -118,56 +167,187 @@ namespace eluosifangkuai
         private void Update_timer(object? sender, EventArgs e)
         {
             // 生成一个block
-            if(block1 == null)
+            if (Iblock == null)
             {
-                block1 = new Block1(3, 4);
-                block1.Draw(inderArrays);
+                if (GameStatus != 0)
+                {
+                    Iblock = GetNewBlock();
+                    Iblock.Draw(inderArrays);
+                    DrawGraphies();
+                }
             }
             else
             {
-                if (block1.CanMove(EventType.Down, inderArrays))
+                if (Iblock.CanMove(EventType.Down, inderArrays))
                 {
-                    block1.Down(inderArrays);
+                    Iblock.Down(inderArrays);
                     DrawGraphies();
                 }
                 else
                 {
                     CalculateScore();
-
-                    block1 = new Block1(3, 4);
-                    block1.Draw(inderArrays);
+                    Iblock = GetNewBlock();
+                    Iblock.Draw(inderArrays);
                 }
             }
             // 控制block的下落
             //if
-            //block1.Down(inderArrays);
+            //Iblock.Down(inderArrays);
 
+        }
+
+        private IBlock? GetNewBlock()
+        {
+            IBlock block = null;
+            Random random = new Random();
+            // 生成介于 0 到 6 之间的随机数
+            int randomNumber = random.Next(0, 7);
+            switch (randomNumber)
+            {
+                case 0:
+                    block = new Block1(0, 4);
+                    break;
+                case 1:
+                    block = new Block2(0, 4);
+                    break;
+                case 2:
+                    block = new Block3(0, 4);
+                    break;
+                case 3:
+                    block = new Block4(0, 4);
+                    break;
+                case 4:
+                    block = new Block5(0, 4);
+                    break;
+                case 5:
+                    block = new Block6(0, 4);
+                    break;
+                case 6:
+                    block = new Block7(0, 4);
+                    break;
+            }
+
+            return block;
         }
 
         private void CalculateScore()
         {
 
-           for (int i = 0; i < row; i++)
+            for (int i = 0; i < row; i++)
             {
                 bool flag = true;
-                for(int j = 0; j < col; j++)
+                for (int j = 0; j < col; j++)
                 {
                     if (inderArrays[i, j] == 0)
                     {
                         flag = false;
+                        break;
                     }
 
                 }
                 if (flag)
                 {
-                    for (int j = 0; j < col; j++)
+                    Score++;
+                    scoreLable.Text = Score.ToString();
+                    for (int row1 = i; row1 >= 0; row1--)
                     {
-                        inderArrays[i, j] = inderArrays[i - 1, j];
-                        inderArrays[i - 1, j] = 0;
-
+                        for (int j = 0; j < col; j++)
+                        {
+                            if (row1 == 0)
+                            {
+                                inderArrays[row1, j] = 0;
+                            }
+                            else if (row1 - 1 > 0)
+                            {
+                                inderArrays[row1, j] = inderArrays[row1 - 1, j];
+                            }
+                        }
                     }
                 }
 
+            }
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            timer.Stop();
+            Iblock = null;
+            Score = 0;
+            scoreLable.Text = Score.ToString();
+            initIndexArray();
+            DrawGraphies();
+            GameStatus = 1;
+            timer.Start();
+
+            this.Focus();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (GameStatus == 1)
+            {
+                timer.Stop();
+            }
+            else if (GameStatus == 2)
+            {
+                timer.Start();
+            }
+            this.Focus();
+
+        }
+
+        private void panel3_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+
+            if (GameStatus == 1)
+            {
+                if (e.KeyCode == Keys.Down)
+                {
+                    if (Iblock != null && Iblock.CanMove(EventType.Down, inderArrays))
+                    {
+                        Iblock.Down(inderArrays);
+                        DrawGraphies();
+                    }
+                }
+                else if (e.KeyCode == Keys.Left)
+                {
+                    if (Iblock != null && Iblock.CanMove(EventType.Left, inderArrays))
+                    {
+                        Iblock.Left(inderArrays);
+                        DrawGraphies();
+                    }
+                }
+                else if (e.KeyCode == Keys.Right)
+                {
+                    if (Iblock != null && Iblock.CanMove(EventType.Right, inderArrays))
+                    {
+                        Iblock.Right(inderArrays);
+                        DrawGraphies();
+                    }
+                }
+                else if (e.KeyCode == Keys.Up)
+                {
+                    if (Iblock != null)
+                    {
+                        Iblock.Rotate(inderArrays);
+                        DrawGraphies();
+                    }
+                }
             }
         }
     }

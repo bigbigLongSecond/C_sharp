@@ -6,16 +6,20 @@ using System.Threading.Tasks;
 
 namespace eluosifangkuai.block
 {
-    public class Block1 : Block
+    /**
+     *    -
+     *    ---
+     *  反L型
+     */
+    public class Block7 : Block
     {
-        public Block1(int x, int y)
+        public Block7(int x, int y)
         {
             X = x;
             Y = y;
             sharpType = SharpType.Up;
-
         }
-      
+
 
         public override void Rotate(int[,] array)
         {
@@ -41,7 +45,6 @@ namespace eluosifangkuai.block
             }
         }
 
-
         public override List<Square> getAllPoint(int x, int y, SharpType type)
         {
             List<Square> squareList = new List<Square>();
@@ -51,36 +54,31 @@ namespace eluosifangkuai.block
                 case SharpType.Up:
                     squareList.Add(new Square().setValue(x, y));
                     squareList.Add(new Square().setValue(x, y - 1));
-                    squareList.Add(new Square().setValue(x, y + 1));
+                    squareList.Add(new Square().setValue(x, y - 2));
                     squareList.Add(new Square().setValue(x - 1, y));
                     break;
                 case SharpType.Right:
-
                     squareList.Add(new Square().setValue(x, y));
                     squareList.Add(new Square().setValue(x - 1, y));
-                    squareList.Add(new Square().setValue(x + 1, y));
+                    squareList.Add(new Square().setValue(x - 2, y));
                     squareList.Add(new Square().setValue(x, y + 1));
 
                     break;
                 case SharpType.Down:
-
                     squareList.Add(new Square().setValue(x, y));
-                    squareList.Add(new Square().setValue(x, y - 1));
                     squareList.Add(new Square().setValue(x, y + 1));
+                    squareList.Add(new Square().setValue(x, y + 2));
                     squareList.Add(new Square().setValue(x + 1, y));
 
                     break;
                 case SharpType.Left:
-
                     squareList.Add(new Square().setValue(x, y));
-                    squareList.Add(new Square().setValue(x - 1, y));
                     squareList.Add(new Square().setValue(x + 1, y));
+                    squareList.Add(new Square().setValue(x + 2, y));
                     squareList.Add(new Square().setValue(x, y - 1));
-
                     break;
             }
             return squareList;
         }
     }
-
 }
